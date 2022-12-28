@@ -10,7 +10,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Master {
-	static Job job;
 
 	public static void main(String args[]) {
 		args = new String[] { "3012" };
@@ -22,136 +21,121 @@ public class Master {
 		}
 
 		int portNumber = Integer.parseInt(args[0]);
-		
+
 		// lock object for thread
 		Object lock = new Object();
 		ArrayList<String> jobs = new ArrayList<String> ();
-		
-		
-		
-	
-		
-		
 
-//
-//
+		int slaveACount = 0;
+		int slaveBCount = 0;
+
 		try (
 				ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
-				
-				Socket clientSocket = serverSocket.accept();
-				PrintWriter clientResponseWriter = new PrintWriter(clientSocket.getOutputStream(), true);
-				BufferedReader clientRequestReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				
+
+				Socket client1Socket = serverSocket.accept();
+				PrintWriter client1ResponseWriter = new PrintWriter(client1Socket.getOutputStream(), true);
+				BufferedReader client1RequestReader = new BufferedReader(new InputStreamReader(client1Socket.getInputStream()));
+
+//				Socket client2Socket = serverSocket.accept();
+//				PrintWriter client2ResponseWriter = new PrintWriter(client2Socket.getOutputStream(), true);
+//				BufferedReader client2RequestReader = new BufferedReader(new InputStreamReader(client2Socket.getInputStream()));
+
 				Socket slaveASocket = serverSocket.accept();
 				PrintWriter slaveAResponseWriter = new PrintWriter(slaveASocket.getOutputStream(), true);
 				BufferedReader slaveARequestReader = new BufferedReader(new InputStreamReader(slaveASocket.getInputStream()));
-			
+
 				Socket slaveBSocket = serverSocket.accept();
 				PrintWriter slaveBResponseWriter = new PrintWriter(slaveBSocket.getOutputStream(), true);
 				BufferedReader slaveBRequestReader = new BufferedReader(new InputStreamReader(slaveBSocket.getInputStream()));
-				
+
 				) 
 		{
-			
-			ReadThread clientToMaster = new ReadThread(clientSocket, lock, jobs);
+
+			ReadThread client1ToMaster = new ReadThread(client1Socket, lock, jobs);
+//			ReadThread client2ToMaster = new ReadThread(client2Socket, lock, jobs);
+
 			// new
-			clientToMaster.start();
+
+
 
 			String stringFromClient = null;
 
 			// endless loop getting jobs
+
 			while (true) {
-				while (!jobs.isEmpty()) {
-					//if (jobs.size() > 0) {
-					// et here
-					// get 0 and remove  when done
+				// et here
+
+				if (!jobs.isEmpty()) {
+					System.out.println("jobs is not empty");
+					System.out.println(jobs);
+
 					stringFromClient = jobs.get(0);
-//					String type = stringFromClient.substring(stringFromClient.length()-1).toUpperCase();
-//					String id = stringFromClient.substring(0,stringFromClient.length()-1).toUpperCase();
 
-					//String status;
+					Job job = new Job(stringFromClient);
+					System.out.println(jobs);
 
-					job = new Job(stringFromClient);
-					//send job
-					//change status to started
 
-					//while (!jobs.isEmpty()) {
-					System.out.println("hi");
-					if (jobs.get(0).contains("A")) {
-						// send to slave a
-						//slaveAResponseWriter.println(job.getType().toString() + job.getId().toString());
-						slaveAResponseWriter.println(jobs.get(0));
-						System.out.println("sending job to A");
-
-					} else {
-						System.out.println("job not sent");
+					for (int i = 0; i < jobs.size(); i++) {
+						if (jobs.get(i).contains(job.getId())) {
+							// this is the job we wnat ot chaneg the stat of to complete
+							job.setStatus("complete");
+							// get the slave who did it
+							
+							// and decrement count
+							System.out.println("JOb contains complete");
+						}
 					}
-					//}
+
+					if (job.getStatus().equals("sending")) {
+						// logic of assigning to right slave
+						// and send over
+						if (job.getType().equals("A")) {
+							// if slave a count <= slaveb count + 5, then send to a, o/w send to b
+							System.out.println("Sending job to Slave A");
+							slaveACount++;
+							slaveAResponseWriter.println(job.toString());
+						}
+						else {
+							System.out.println("Sending job to Slave B");
+							slaveBCount++;
+							slaveBResponseWriter.println(job.toString());	
+						}
+					}
+					else {
+						// completed
+						// send message to client that it's competed
+						client1ResponseWriter.println("Job " + job.getId() + " is complete.");
+						System.out.println("job is complete");
+					}
+
+					// remove from list
+					jobs.remove(0);
+
+
 
 				}
 
-//				job.setType(type);
-//				job.setId(id);
+				//				job.setType(type);
+				//				job.setId(id);
+				System.out.println("\"" + stringFromClient + "\" received");
+				
+				client1ToMaster.start();
+//				client2ToMaster.start();
+				
 				System.out.println("\"" + stringFromClient + "\" received");
 
 
-//
-//		
-//				// depending on type, send to slave
-//		
-//		
-				// as long as have jobs to send, want to do them
-
 				try {
-					clientToMaster.join();
+					client1ToMaster.join();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
 			}
-				
-				
-					
-					
-
-					//Thread masterToSlaveA = new WriteThread(hostName, slavePortNumber) ;
-////					
-////					Thread masterFromSlaveA = new ServerThread(slavePortNumber, job);
-//				//	sendSlave(slavePortNumber, hostName);
-//
-//					// then send to slave a
-//				}
-//				else {
-//					// make a connection
-//					args = new String[] {"127.0.0.1", "5555"};
-//
-//					if (args.length != 2) {
-//						System.err.println(
-//								"Usage: java EchoClient <host name> <port number>");
-//						System.exit(1);
-//					}
-//
-//					String hostName2 = args[0];
-//					int slavePortNumber2 = Integer.parseInt(args[1]);
-
-				//	sendSlave(slavePortNumber, hostName);
-					
-//					Thread masterToSlaveB = new ClientThread(hostName2, slavePortNumber2) ;
-//					
-//					Thread masterFromSlaveB = new ServerThread(slavePortNumber2, job);
-
-					// send to slave b
-		//		}
-				
-//				Thread masterToClient = new ClientThread("127.0.0.1", 222);
 
 
-				//				String response = magicEightBall.getNextAnswer();
-				//				System.out.println("Responding: \"" + response + "\"");
-				//				responseWriter.println(response);
-				//				response = magicEightBall.getNextAnswer();
-				//				System.out.println("Responding: \"" + response + "\"");
+
 
 		} catch (IOException e) {
 			System.out.println(
@@ -161,13 +145,13 @@ public class Master {
 
 
 
-	
 
 
-	//
 
-	
-}
+		//
+
+
+	}
 }
 
 

@@ -6,6 +6,7 @@ public class Job {
 	private String type;
 	private String status;
 	private String clientID;
+	//private String completedBy;
 
 	public String getStatus() {
 		return status;
@@ -22,7 +23,6 @@ public class Job {
 		this.type = stringArray[1];
 		this.clientID = stringArray[2];
 		this.status = stringArray[3];
-	
 	}
 //	public String [] splitString(String str){
 //		String [] newString = str.split(" ");

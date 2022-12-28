@@ -39,23 +39,26 @@ public class SlaveA  {
 			masterToSlave.start();
 
 			while(true){
-				if (masterToSlave.getJob() != null){
-					String usersRequest = masterToSlave.getJob();
-					System.out.println("Receiving job from master\n" + usersRequest);
+				// read from master
+				// sleep/change status / write
+				String usersRequest;
+				while ((usersRequest = responseReader.readLine()) != null) {
+					System.out.println("Receiving job from master");
+
+					Job job = new Job(usersRequest);
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+//					job.setStatus("complete");
+					requestWriter.println(job.toString());
+				//	requestWriter.println(job.getId() + " is done by Slave A");
+					// make sure master receives this
+					// search for this job id and set status to done!
 				}
-				else{
-					//System.out.println("not working");
-				}
-			}
-
-
-			
-
-
-			//while ((usersRequest = responseReader.readLine()) != null) {
-				// assign and do job
-
-			//}
+		
+		}
 
 		} catch (IOException e) {
 			System.out.println(

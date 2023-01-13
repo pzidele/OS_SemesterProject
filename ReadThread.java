@@ -1,5 +1,4 @@
 package project;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,17 +14,17 @@ public class ReadThread extends Thread {
 	Socket socket;
 	BufferedReader reader;
 	Object lock;
-	String job;
-
-	public void setJob(String job) {
-		this.job = job;
-	}
-
-
-
-	public String getJob() {
-		return job;
-	}
+//	String job;
+//
+//	public void setJob(String job) {
+//		this.job = job;
+//	}
+//
+//
+//
+//	public String getJob() {
+//		return job;
+//	}
 
 
 	//	String job;
@@ -46,9 +45,9 @@ public class ReadThread extends Thread {
 		this(clientSocket, null, null);
 	}
 
-	@Override 
+	@Override
 	public void run() {
-	
+
 		try {
 
 			String input;
@@ -57,7 +56,8 @@ public class ReadThread extends Thread {
 
 				// dump on queue
 				synchronized(lock) {
-					jobs.add(input);	
+
+					jobs.add(input);
 					System.out.println("from thread: " + jobs);
 				}
 
@@ -65,7 +65,7 @@ public class ReadThread extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 
-		}		
+		}
 	}
 }
 

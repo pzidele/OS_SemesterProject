@@ -1,12 +1,23 @@
 package project;
-
 public class Job {
-	
+
 	private String id;
 	private String type;
 	private String status;
+	private String sentToSlave;
 	private String clientID;
-	//private String completedBy;
+
+	public void setSentToSlave(String sentToSlave) {
+		this.sentToSlave = sentToSlave;
+	}
+
+	public String getSentToSlave() {
+		return sentToSlave;
+	}
+
+	public String getClientID() {
+		return clientID;
+	}
 
 	public String getStatus() {
 		return status;
@@ -16,7 +27,7 @@ public class Job {
 		this.status = status;
 	}
 
-	
+
 	public Job(String str) {
 		String [] stringArray = str.split(" ");
 		this.id = stringArray[0];
@@ -32,18 +43,18 @@ public class Job {
 	//public Job(String str) {
 //		String type = str.substring(str.length()-1).toUpperCase();
 //		String id = str.substring(0,str.length()-1).toUpperCase();
-		
-		// call other constructor
+
+	// call other constructor
 
 
 
-		//this(str.substring(0,str.length()-1).toUpperCase(),str.substring(str.length()-1).toUpperCase(), "client1", "stat" );
+	//this(str.substring(0,str.length()-1).toUpperCase(),str.substring(str.length()-1).toUpperCase(), "client1", "stat" );
 
 	//}
-	
-	
-	
-	
+
+
+
+
 
 	/**
 	 * @return the id

@@ -1,5 +1,4 @@
 package project;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,12 +29,36 @@ public class SlaveB  {
 				BufferedReader stdIn = // standard input stream to get user's requests
 						new BufferedReader(
 								new InputStreamReader(System.in))) {
-//			String usersRequest;
-//
-//			while ((usersRequest = requestReader.readLine()) != null) {
-//				// assign and do job
-//				System.out.println(usersRequest);
-//			}
+
+
+			// read from master
+			// sleep/change status / write
+			String usersRequest;
+			while ((usersRequest = responseReader.readLine()) != null) {
+				System.out.println("Slave B receiving " + usersRequest + " from master");
+
+				Job job = new Job(usersRequest);
+				if(job.getType() == "B") {
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				else{
+					try {
+						Thread.sleep(4000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+
+				job.setStatus("complete");
+				System.out.println("Job status: " + job.getStatus());
+				requestWriter.println(job.getId() + " " + job.getType() + " " + job.getClientID() + " " + job.getStatus()); // send request to server
+			}
+
 
 		} catch (IOException e) {
 			System.out.println(
